@@ -28,6 +28,53 @@ export type SessionFrame = {
   worldLandmarks: LandmarkPoint[];
 };
 
+export type AnalysisStatus =
+  | 'good'
+  | 'improvable'
+  | 'correct';
+
+export type MetricStatistics = {
+  average: number | null;
+  min: number | null;
+  max: number | null;
+  validSamples: number;
+  totalSamples: number;
+  availabilityPercent: number;
+};
+
+export type SummaryAssessment = {
+  id: string;
+  label: string;
+  status: AnalysisStatus;
+  message: string;
+};
+
+export type SessionSummary = {
+  durationMs: number;
+  sampleCount: number;
+
+  confidence: {
+    average: number | null;
+    min: number | null;
+    max: number | null;
+  };
+
+  metrics: {
+    leftKnee: MetricStatistics;
+    rightKnee: MetricStatistics;
+    leftHip: MetricStatistics;
+    rightHip: MetricStatistics;
+    leftElbow: MetricStatistics;
+    rightElbow: MetricStatistics;
+    trunkTilt: MetricStatistics;
+  };
+
+  dataQuality: {
+    overall: AnalysisStatus;
+    assessments: SummaryAssessment[];
+  };
+};
+
 export type RecordedSession = {
   schemaVersion: 1;
   appVersion: string;
@@ -35,10 +82,19 @@ export type RecordedSession = {
   endedAt: string;
   cameraFacingMode: 'user' | 'environment';
   samplingHz: number;
+
   device: {
     userAgent: string;
-    viewport: { width: number; height: number };
-    camera: { width?: number; height?: number; frameRate?: number };
+    viewport: {
+      width: number;
+      height: number;
+    };
+    camera: {
+      width?: number;
+      height?: number;
+      frameRate?: number;
+    };
   };
+
   frames: SessionFrame[];
 };
